@@ -45,7 +45,10 @@ public class ArticleController {
     public ResponseEntity<Article> update(@Valid @RequestBody UpdateArticleDto dto, @PathVariable Integer id){
         Article article= articleService.update(id,dto);
         return ResponseEntity.status(200).body(article);
-
-
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Integer id){
+        articleService.delete(id);
+        return ResponseEntity.status(204).build();
     }
 }

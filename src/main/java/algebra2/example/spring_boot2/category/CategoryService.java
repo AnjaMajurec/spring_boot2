@@ -14,4 +14,6 @@ public interface CategoryService {
     Category create(CreateCategoryDto dto);
 
     Category update(Integer id, UpdateCategoryDto dto);
+
+    void delete(Integer id);
 }

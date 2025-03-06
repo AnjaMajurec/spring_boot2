@@ -11,4 +11,6 @@ public interface CategoryRepository {
     Category create(Category category);
 
     Category update(Category category);
+
+    void delete(Integer id);
 }

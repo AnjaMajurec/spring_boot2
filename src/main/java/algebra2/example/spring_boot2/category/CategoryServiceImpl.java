@@ -1,5 +1,6 @@
 package algebra2.example.spring_boot2.category;
 
+import algebra2.example.spring_boot2.article.Article;
 import algebra2.example.spring_boot2.category.dto.CreateCategoryDto;
 import algebra2.example.spring_boot2.category.dto.UpdateCategoryDto;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,13 @@ public class CategoryServiceImpl implements CategoryService{
         categoryForUpdate.setName(dto.getName());
         categoryForUpdate.setDescription(dto.getDescription());
         return categoryRepository.update(categoryForUpdate);
+    }
+    @Override
+    public void delete(Integer id){
+        Optional<Category> category=categoryRepository.findById(id);
+        if(!category.isPresent()){
+            throw new InternalException("Category not found");
+        }
+        categoryRepository.delete(id);
     }
 }

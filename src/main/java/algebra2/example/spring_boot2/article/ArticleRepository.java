@@ -11,4 +11,6 @@ public interface ArticleRepository {
     Article create(Article article);
 
     Article update(Article article);
+
+    void delete(Integer id);
 }

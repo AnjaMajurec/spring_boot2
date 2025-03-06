@@ -4,6 +4,7 @@ import algebra2.example.spring_boot2.article.dto.CreateArticleDto;
 import algebra2.example.spring_boot2.article.dto.UpdateArticleDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,19 +13,23 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/articles")
-@RequiredArgsConstructor
+
 public class ArticleController {
     private final ArticleService articleService;
 
+    public ArticleController(@Qualifier("articleServiceImpl") ArticleService articleService){
+        this.articleService=articleService;
+    }
+
     @GetMapping
     public ResponseEntity<List<Article>> fetchAll(){
-        List<Article> articles=articleService.fetchAll();
+        List<Article> articles= articleService.fetchAll();
         return ResponseEntity.status(200).body(articles);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Article> findById(@PathVariable Integer id){
-        Optional<Article> article=articleService.findById(id);
+        Optional<Article> article= articleService.findById(id);
         if(article.isEmpty()){
             return ResponseEntity.status(404).build();
         }
@@ -33,12 +38,12 @@ public class ArticleController {
     }
     @PostMapping()
     public ResponseEntity<Article> create(@Valid @RequestBody CreateArticleDto dto){
-        Article article=articleService.create(dto);
+        Article article= articleService.create(dto);
         return ResponseEntity.status(200).body(article);
     }
     @PutMapping("/{id}")
     public ResponseEntity<Article> update(@Valid @RequestBody UpdateArticleDto dto, @PathVariable Integer id){
-        Article article=articleService.update(id,dto);
+        Article article= articleService.update(id,dto);
         return ResponseEntity.status(200).body(article);
 
 

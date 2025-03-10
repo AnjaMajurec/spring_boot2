@@ -18,5 +18,8 @@ public interface ArticleService {
 
     void delete(Integer id);
 
+    List<Article> searchByNameOrDescription(String searchWord);
+
+
 
 }

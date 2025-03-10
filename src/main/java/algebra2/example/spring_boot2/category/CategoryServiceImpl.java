@@ -21,12 +21,12 @@ public class CategoryServiceImpl implements CategoryService{
     }
     @Override
     public List<Category> fetchAll(){
-        return categoryRepository.fetchAll();
+        return categoryRepository.findAll();
     }
     @Override
     public Category create(CreateCategoryDto dto){
         Category category=new Category(dto.getName(),dto.getDescription());
-        return categoryRepository.create(category);
+        return categoryRepository.save(category);
     }
     @Override
     public Category update(Integer id, UpdateCategoryDto dto){
@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService{
         Category categoryForUpdate=category.get();
         categoryForUpdate.setName(dto.getName());
         categoryForUpdate.setDescription(dto.getDescription());
-        return categoryRepository.update(categoryForUpdate);
+        return categoryRepository.save(categoryForUpdate);
     }
     @Override
     public void delete(Integer id){
@@ -45,6 +45,6 @@ public class CategoryServiceImpl implements CategoryService{
         if(!category.isPresent()){
             throw new InternalException("Category not found");
         }
-        categoryRepository.delete(id);
+        categoryRepository.delete(category.get());
     }
 }

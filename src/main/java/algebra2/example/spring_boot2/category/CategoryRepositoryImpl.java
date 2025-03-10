@@ -11,9 +11,8 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class CategoryRepositoryImpl implements CategoryRepository {
+public class CategoryRepositoryImpl {
     private final JdbcTemplate jdbcTemplate;
-    @Override
     public Optional<Category> findById(Integer id){
         String query="SELECT * FROM Category WHERE id=?";
         try {
@@ -22,23 +21,20 @@ public class CategoryRepositoryImpl implements CategoryRepository {
             return Optional.empty();
         }
     }
-    @Override
+
     public List<Category> fetchAll(){
         return jdbcTemplate.query("SELECT c.id, c.name, c.description FROM Category c", new CategoryRowMapper());
     }
-    @Override
     public Category create(Category category){
         String query="INSERT INTO Category (name, description) VALUES (?,?)";
         jdbcTemplate.update(query,category.getName(),category.getDescription());
         return category;
     }
-    @Override
     public Category update(Category category){
         String query="UPDATE Category SET name=?, description=? WHERE id=?";
         jdbcTemplate.update(query,category.getName(),category.getDescription(),category.getId());
         return category;
     }
-    @Override
     public void delete(Integer id){
         String query="DELETE FROM Category WHERE id=?";
         jdbcTemplate.update(query,id);

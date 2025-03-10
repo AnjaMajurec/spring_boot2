@@ -3,7 +3,6 @@ package algebra2.example.spring_boot2.article;
 import algebra2.example.spring_boot2.article.dto.CreateArticleDto;
 import algebra2.example.spring_boot2.article.dto.UpdateArticleDto;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,4 +50,13 @@ public class ArticleController {
         articleService.delete(id);
         return ResponseEntity.status(204).build();
     }
+    @GetMapping("/search")
+    public ResponseEntity<List<Article>> searchArticles(@RequestParam String searchWord) {
+        List<Article> articles = articleService.searchByNameOrDescription(searchWord);
+        if (articles.isEmpty()) {
+            return ResponseEntity.status(404).build();
+        }
+        return ResponseEntity.status(200).body(articles);
+    }
+
 }

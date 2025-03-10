@@ -61,4 +61,9 @@ public class ArticleServiceImpl implements ArticleService{
         }
         articleRepository.delete(article.get());
     }
+    @Override
+    public List<Article> searchByNameOrDescription(String searchWord) {
+        return articleRepository.searchByNameOrDescription(searchWord);
+    }
+
 }

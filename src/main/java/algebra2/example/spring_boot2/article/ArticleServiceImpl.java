@@ -20,7 +20,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
     @Override
     public List<Article> fetchAll(){
-        return articleRepository.fetchAll();
+        return articleRepository.findAll();
     }
     @Override
     public Optional<Article> findById(Integer id){
@@ -33,7 +33,7 @@ public class ArticleServiceImpl implements ArticleService{
             throw  new InternalException(("Category not found"));
         }
         Article article=new Article(dto.getName(),dto.getDescription(),dto.getPrice(),category.get());
-        return articleRepository.create(article);
+        return articleRepository.save(article);
     }
     @Override
     public Article update(Integer id, UpdateArticleDto dto){
@@ -51,7 +51,7 @@ public class ArticleServiceImpl implements ArticleService{
         articleForUpdate.setPrice(dto.getPrice());
         articleForUpdate.setCategory(category.get());
 
-        return articleRepository.update(articleForUpdate);
+        return articleRepository.save(articleForUpdate);
     }
     @Override
     public void delete(Integer id){
@@ -59,6 +59,6 @@ public class ArticleServiceImpl implements ArticleService{
         if(!article.isPresent()){
             throw new InternalException("Article not found");
         }
-        articleRepository.delete(id);
+        articleRepository.delete(article.get());
     }
 }

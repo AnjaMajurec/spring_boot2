@@ -13,7 +13,7 @@ public class ArticleRowMapper implements RowMapper<Article> {
         String name=rs.getString("name");
         String description=rs.getString("description");
         BigDecimal price=rs.getBigDecimal("price");
-        Integer categoryId=rs.getInt("categoryId");
+        Integer categoryId=rs.getInt("category_Id");
         String categoryName=rs.getString("categoryName");
         String categoryDescription=rs.getString("categoryDescription");
 

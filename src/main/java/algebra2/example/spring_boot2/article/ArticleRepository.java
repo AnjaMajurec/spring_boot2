@@ -1,16 +1,16 @@
 package algebra2.example.spring_boot2.article;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-public interface ArticleRepository {
-    List<Article> fetchAll();
 
-    Optional<Article> findById(Integer id);
+@Repository
+public interface ArticleRepository extends JpaRepository<Article,Integer> {
 
-    Article create(Article article);
+    @Query("SELECT a FROM Article a WHERE a.category.name=?1")
+    Optional <Article> findByName(String name);
 
-    Article update(Article article);
-
-    void delete(Integer id);
 }

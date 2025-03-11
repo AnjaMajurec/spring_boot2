@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,5 +59,28 @@ public class ArticleController {
         }
         return ResponseEntity.status(200).body(articles);
     }
+    @GetMapping("/top-expensive")
+    public ResponseEntity<Article> searchByMostExpansiveArticle(){
+        Optional<Article> article=articleService.searchByMostExpansiveArticle();
+        if(article.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+        return ResponseEntity.status(200).body(article.get());
+    }
 
+    @GetMapping("/count-articles/{categoryId}")
+    public ResponseEntity<Double> countArticlesByCategoryId(@PathVariable Integer categoryId){
+        Double result= articleService.countArticlesByCategoryId(categoryId);
+        return ResponseEntity.status(200).body(result);
+
+    }
+
+    @GetMapping("/priceRange-category")
+    public ResponseEntity<List<Article>> searchByMinAndMaxPriceAndCategoryId(@RequestParam BigDecimal minPrice, @RequestParam BigDecimal maxPrice, @RequestParam Integer categoryId){
+        List<Article> articles=articleService.searchByMinAndMaxPriceAndCategoryId(minPrice,maxPrice,categoryId);
+        if(articles.isEmpty()){
+            return ResponseEntity.status(404).build();
+        }
+        return ResponseEntity.status(200).body(articles);
+    }
 }

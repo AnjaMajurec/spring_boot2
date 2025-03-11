@@ -6,6 +6,7 @@ import algebra2.example.spring_boot2.category.CategoryRepository;
 import org.apache.logging.log4j.util.InternalException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +65,21 @@ public class ArticleServiceImpl implements ArticleService{
     @Override
     public List<Article> searchByNameOrDescription(String searchWord) {
         return articleRepository.searchByNameOrDescription(searchWord);
+    }
+
+    @Override
+    public Optional<Article> searchByMostExpansiveArticle(){
+        return articleRepository.searchByMostExpansiveArticle();
+    }
+
+    @Override
+    public double countArticlesByCategoryId(Integer categoryId){
+        return articleRepository.countArticlesByCategoryId(categoryId);
+    }
+
+    @Override
+    public List<Article> searchByMinAndMaxPriceAndCategoryId(BigDecimal minPrice, BigDecimal maxPrice, Integer categoryId){
+        return articleRepository.searchByMinAndMaxPriceAndCategoryId(minPrice,maxPrice,categoryId);
     }
 
 }

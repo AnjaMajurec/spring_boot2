@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,15 @@ public class ArticleController {
     @GetMapping
     public ResponseEntity<List<Article>> fetchAll(){
         List<Article> articles= articleService.fetchAll();
+
+        List<String> articleNamesFromForLoop = new ArrayList<>();
+        for (Article article : articles) {
+            articleNamesFromForLoop.add(article.getName());
+        }
+
+        List<String> articleNames = articles.stream().map(Article::getName).toList(); //stream-prođi, map-mapiraj
+        // TODO: Proučiti svakako jer ce vam trebati u svakodnevnom programiranju kasnije
+
         return ResponseEntity.status(200).body(articles);
     }
 

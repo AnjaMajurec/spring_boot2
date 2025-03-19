@@ -25,10 +25,22 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
     @Override
     public RefreshToken generateRefreshToken(Long userId){
-        String token= jwtService.generateToken(userId.toString());
+        String token= jwtService.generateRefreshToken(userId.toString());
         Date expiresAt=jwtService.extractExpirationDate(token);
         RefreshToken refreshToken=new RefreshToken(token, userId, expiresAt);
         return refreshTokenRepository.save(refreshToken);
+
+    }
+
+    @Override
+    public RefreshToken findByToken(String token){
+        Optional<RefreshToken> refreshToken=refreshTokenRepository.findByRefreshToken(token);
+
+        if(refreshToken.isEmpty()){
+            throw new RuntimeException("Refresh token not found");
+        }
+
+        return  refreshToken.get();
 
     }
 }

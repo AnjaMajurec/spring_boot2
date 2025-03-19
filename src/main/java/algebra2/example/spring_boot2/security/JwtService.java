@@ -56,11 +56,20 @@ public class JwtService {
                 .parseClaimsJws((token))
                 .getBody();
     }
-    public String generateToken(String username){
+    public String generateAccessToken(String username){
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date()) //trenutno vrijeme
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*60)) //traje 1 sat
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .compact();
+    }
+
+    public String generateRefreshToken(String userId){
+        return Jwts.builder()
+                .setSubject(userId)
+                .setIssuedAt(new Date()) //trenutno vrijeme
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*100)) //traje 100h
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }

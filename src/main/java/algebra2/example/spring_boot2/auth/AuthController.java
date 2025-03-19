@@ -1,9 +1,12 @@
 package algebra2.example.spring_boot2.auth;
 
-import algebra2.example.spring_boot2.auth.dto.AccessTokenResponseDto;
-import algebra2.example.spring_boot2.auth.dto.GenerateRefreshTokenDto;
+import algebra2.example.spring_boot2.auth.dto.LoginResponseDto;
+import algebra2.example.spring_boot2.auth.dto.GenerateAccessTokenFromRefreshTokenDto;
 import algebra2.example.spring_boot2.auth.dto.LoginDto;
+import algebra2.example.spring_boot2.auth.dto.RefreshTokenResponseDto;
 import algebra2.example.spring_boot2.security.JwtService;
+import algebra2.example.spring_boot2.user.User;
+import algebra2.example.spring_boot2.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth/api/v1")
@@ -24,23 +29,38 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
+    private final UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<AccessTokenResponseDto> login(@Valid @RequestBody LoginDto dto){
+    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto dto){
         //potrebna nam je autentifikacija preko autentification manager
         Authentication authentication=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(),dto.getPassword())); //manageru poslali podatke da validira username i password
         if(!authentication.isAuthenticated()){
             throw  new UsernameNotFoundException("Wrong credentials.");
         }
-        String token=jwtService.generateToken(dto.getUsername());
-        AccessTokenResponseDto accessTokenResponseDto=new AccessTokenResponseDto(token);
-        return ResponseEntity.ok(accessTokenResponseDto);
+        String accessToken=jwtService.generateAccessToken(dto.getUsername());
+
+        User user =userService.findByUsername(dto.getUsername());
+        RefreshToken refreshToken=refreshTokenService.generateRefreshToken(user.getId());
+        LoginResponseDto loginResponseDto =new LoginResponseDto(accessToken,refreshToken.getRefreshToken());
+        return ResponseEntity.ok(loginResponseDto);
 
 
 
     }
     @PostMapping("/refreshToken")
-    public ResponseEntity generateRefreshToken(@Valid @RequestBody GenerateRefreshTokenDto dto){
+    public ResponseEntity<RefreshTokenResponseDto> generateRefreshToken(@Valid @RequestBody GenerateAccessTokenFromRefreshTokenDto dto){
+        RefreshToken refreshToken=refreshTokenService.findByToken(dto.getRefreshToken());
+        Date expireDate=jwtService.extractExpirationDate(refreshToken.getRefreshToken());
+        if(expireDate.before(new Date())){
+            //dodati brisanje RefreshToken-a ako je istekao
+            throw new RuntimeException("Refresh token expired.");
+        }
+        User user=userService.findById(refreshToken.getUserId());
+        String accessToken=jwtService.generateAccessToken(user.getUsername());
+        RefreshTokenResponseDto responseDto=new RefreshTokenResponseDto(accessToken);
+        return ResponseEntity.ok(responseDto);
 
 
     }

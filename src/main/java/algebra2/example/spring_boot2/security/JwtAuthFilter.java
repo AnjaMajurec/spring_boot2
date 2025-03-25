@@ -25,15 +25,15 @@ public class JwtAuthFilter extends OncePerRequestFilter { //alt+insert-override-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String url=request.getRequestURI();
+        if(url.equals("/auth/api/v1/login") || url.equals("/auth/api/v1/refreshToken")){
+            filterChain.doFilter(request,response);
+            return;
+        }
         String authHeader=request.getHeader("Authorization"); //naziv bilo koji, no mora biti syncan s nazivom headera u postmanu
         String token=null;
         String username=null;
 
-        String url=request.getRequestURI();
-        if(url.equals("/auth/api/v1/login") || url.equals("auth/api/v1/refreshToken")){
-            filterChain.doFilter(request,response);
-            return;
-        }
 
         if(authHeader==null){
             throw new ServletException();

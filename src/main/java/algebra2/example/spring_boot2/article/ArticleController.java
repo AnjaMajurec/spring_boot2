@@ -49,7 +49,7 @@ public class ArticleController {
     @PostMapping()
     public ResponseEntity<Article> create(@Valid @RequestBody CreateArticleDto dto){
         Article article= articleService.create(dto);
-        return ResponseEntity.status(200).body(article);
+        return ResponseEntity.status(201).body(article);
     }
     @PutMapping("/{id}")
     public ResponseEntity<Article> update(@Valid @RequestBody UpdateArticleDto dto, @PathVariable Integer id){
